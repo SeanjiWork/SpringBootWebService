@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:replace="~{layout/header :: title}"></title>
+
+    <!-- CSS Files -->
+    <!-- Google Font: Source Sans Pro -->
+    <link
+            rel="stylesheet"
+            href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback"
+    />
+
+    <!-- Font Awesome -->
+    <link
+            th:href="@{/plugins/fontawesome-free/css/all.min.css}"
+            rel="stylesheet"
+    />
+
+    <!-- Ionicons -->
+    <link
+            rel="stylesheet"
+            href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css"
+    />
+
+    <!-- Tempusdominus Bootstrap 4 -->
+    <link
+            th:href="@{/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css}"
+            rel="stylesheet"
+    />
+
+    <!-- iCheck -->
+    <link
+            th:href="@{/plugins/icheck-bootstrap/icheck-bootstrap.min.css}"
+            rel="stylesheet"
+    />
+
+    <!-- JQVMap -->
+    <link th:href="@{/plugins/jqvmap/jqvmap.min.css}" rel="stylesheet"/>
+
+    <!-- Theme style -->
+    <link th:href="@{/dist/css/adminlte.min.css}" rel="stylesheet"/>
+
+    <!-- overlayScrollbars -->
+    <link
+            th:href="@{/plugins/overlayScrollbars/css/OverlayScrollbars.min.css}"
+            rel="stylesheet"
+    />
+
+    <!-- Daterange picker -->
+    <link
+            th:href="@{/plugins/daterangepicker/daterangepicker.css}"
+            rel="stylesheet"
+    />
+
+    <!-- Summernote -->
+    <link
+            th:href="@{/plugins/summernote/summernote-bs4.min.css}"
+            rel="stylesheet"
+    />
+    <style>
+        .error {
+            color: #f00
+        }
+    </style>
+</head>
+<body class="hold-transition sidebar-mini layout-fixed">
+<div class="wrapper">
+<!--Header-->
+    <div th:replace="~{layout/header :: header}"></div>
+<!--sidebar-->
+    <div th:replace="~{layout/sidebar :: sidebar}"></div>
+<!--Main Content-->
+    <div th:replace="~{${content}}"></div>
+<!--Footer-->
+    <div th:replace="~{layout/footer :: footer}"></div>
+</div>
+<!-- JavaScript Files -->
+<!-- jQuery -->
+<script th:src="@{/plugins/jquery/jquery.min.js}"></script>
+<!--axios-->
+<script th:src="@{plugins/axios@1.7.2/axios.min.js}"></script>
+<!--jquery validate-->
+<script th:src="@{plugins/jquery-validation/jquery.validate.min.js}"></script>
+<!-- jQuery UI 1.11.4 -->
+<script th:src="@{/plugins/jquery-ui/jquery-ui.min.js}"></script>
+<!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
+<script>
+    $.widget.bridge("uibutton", $.ui.button);
+</script>
+<!-- Bootstrap 4 -->
+<script
+        th:src="@{/plugins/bootstrap/js/bootstrap.bundle.min.js}"
+></script>
+<!-- ChartJS -->
+<script th:src="@{/plugins/chart.js/Chart.min.js}"></script>
+<!-- Sparkline -->
+<script th:src="@{/plugins/sparklines/sparkline.js}"></script>
+<!-- JQVMap -->
+<script th:src="@{/plugins/jqvmap/jquery.vmap.min.js}"></script>
+<script th:src="@{/plugins/jqvmap/maps/jquery.vmap.usa.js}"></script>
+<!-- jQuery Knob Chart -->
+<script th:src="@{/plugins/jquery-knob/jquery.knob.min.js}"></script>
+<!-- daterangepicker -->
+<script th:src="@{/plugins/moment/moment.min.js}"></script>
+<script
+        th:src="@{/plugins/daterangepicker/daterangepicker.js}"
+></script>
+<!-- Tempusdominus Bootstrap 4 -->
+<script
+        th:src="@{/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js}"
+></script>
+<!-- Summernote -->
+<script th:src="@{/plugins/summernote/summernote-bs4.min.js}"></script>
+<!-- overlayScrollbars -->
+<script
+        th:src="@{/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js}"
+></script>
+<!-- AdminLTE App -->
+<script th:src="@{/dist/js/adminlte.min.js}"></script>
+<!-- AdminLTE for demo purposes -->
+<script th:src="@{/dist/js/demo.js}"></script>
+<!-- AdminLTE dashboard demo -->
+<script th:src="@{/dist/js/pages/dashboard.js}"></script>
+<script>
+    // Lấy các phần tử từ form
+    const submitBtn = document.getElementById('submitBtn');
+    const messageDiv = document.getElementById('message');
+
+    submitBtn.addEventListener('click', function () {
+        // Tạo đối tượng dữ liệu từ form
+        const productData = {
+            name: document.getElementById('name').value,
+            description: document.getElementById('description').value,
+            price: document.getElementById('price').value,
+            stock: document.getElementById('stock').value,
+            categoryCode: document.getElementById('categoryCode').value
+        };
+
+        // Kiểm tra dữ liệu trước khi gửi
+        if (!productData.name || !productData.price || !productData.stock || !productData.categoryCode) {
+            messageDiv.textContent = 'Vui lòng điền đầy đủ thông tin bắt buộc.';
+            return;
+        }
+
+        // Reset thông báo lỗi
+        messageDiv.textContent = '';
+
+        // Gửi dữ liệu đến server qua Axios
+        axios.post('/api/product', productData)
+            .then(response => {
+                alert('Sản phẩm đã được thêm thành công!');
+                console.log(response.data);
+                // Reset form hoặc thực hiện hành động khác
+                document.getElementById('productForm').reset();
+                // Chuyển hướng về trang danh sách sản phẩm
+                window.location.href = '/product'; // Đường dẫn cần chuyển hướng
+            })
+            .catch(error => {
+                console.error(error);
+                const errorMessage = error.response?.data || 'Có lỗi xảy ra!';
+                messageDiv.textContent = errorMessage;
+            });
+    });
+</script>
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        debugger
+        axios.get('/api/product/2')
+            .then(function (response) {
+                console.log(response);
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+    });
+
+    const apiUrl = '/api/product';
+    let currentPage = 1;
+    const limit = 10; // Số sản phẩm mỗi trang
+
+
+    // Hàm để gọi API và render dữ liệu
+    async function fetchProducts(page) {
+        try {
+            const response = await axios.get(apiUrl, {
+                params: {
+                    page: page,
+                    limit: limit,
+                },
+            });
+
+            const data = response.data;
+            renderProducts(data.listResult);
+            updatePagination(data.page, data.totalPage);
+
+
+        } catch (error) {
+            console.error('Error fetching products:', error);
+            alert('Không thể tải sản phẩm.');
+        }
+    }
+
+
+    // Hàm render dữ liệu sản phẩm vào bảng
+    function renderProducts(products) {
+        const tableBody = document.getElementById('productTableBody');
+        // tableBody.innerHTML = ''; // Xóa dữ liệu cũ
+        let html = '';
+
+        products.forEach((product, index) => {
+            console.log(product.id);
+            html += `
+                <tr>
+                    <td>${index + 1}</td>
+                    <td>${product.name}</td>
+                    <td>
+                        <img src="/dist/img/ip.jpg"
+                             alt="Ảnh sản phẩm" class="img-fluid" style="width: 200px; height: 100px;">
+                    </td>
+                    <td class="text-center">${product.price.toLocaleString()}</td>
+                    <td class="project-actions text-center">
+                        <a class="btn btn-primary btn-md" href="/e-commerce">
+                            <i class="fas fa-folder"></i> Xem
+                        </a>
+                        <a class="btn btn-info btn-md" href="/general/${product.id.toString()}">
+                            <i class="fas fa-pencil-alt"></i> Sửa
+                        </a>
+                        <button class="btn btn-danger btn-md" onclick="deleteProduct(${product.id})">
+                            <i class="fas fa-trash"></i> Xóa
+                        </button>
+                    </td>
+                </tr>;
+            `
+        });
+        $('#productTableBody').html(html);
+    }
+
+    // Hàm cập nhật phân trang
+    function updatePagination(page, totalPage) {
+        document.getElementById('currentPage').textContent = `Trang: ${page}`;
+        document.getElementById('prevPage').disabled = page <= 1;
+        document.getElementById('nextPage').disabled = page >= totalPage;
+    }
+
+    // Hàm xử lý khi nhấn nút chuyển trang
+    document.getElementById('prevPage').addEventListener('click', () => {
+        if (currentPage > 1) {
+            currentPage--;
+            fetchProducts(currentPage);
+        }
+    });
+
+    document.getElementById('nextPage').addEventListener('click', () => {
+        currentPage++;
+        fetchProducts(currentPage);
+    });
+
+    // Hàm xóa sản phẩm
+    async function deleteProduct(productId) {
+        if (confirm('Bạn có chắc chắn muốn xóa sản phẩm này?')) {
+            try {
+                // Gửi danh sách ID trong body
+                await axios.delete('/api/product', {
+                    data: [productId], // Gửi ID dưới dạng mảng
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                });
+                alert('Xóa sản phẩm thành công!');
+                // Chuyển hướng về trang danh sách sản phẩm
+                window.location.href = '/product'; // Đường dẫn cần chuyển hướng
+                fetchProducts(currentPage); // Cập nhật lại danh sách
+            } catch (error) {
+                console.error('Lỗi khi xóa sản phẩm:', error);
+                alert('Không thể xóa sản phẩm.');
+            }
+        }
+    }
+    // Khởi chạy lần đầu
+    fetchProducts(currentPage);
+</script>
+
+<script>
+    function updateProduct(productId) {
+        const productData = {
+            name: document.getElementById('name').value,
+            description: document.getElementById('description').value,
+            price: parseFloat(document.getElementById('price').value),
+            stock: parseInt(document.getElementById('stock').value),
+            categoryCode: document.getElementById('categoryCode').value,
+        };
+
+        // Kiểm tra nếu tên sản phẩm trống
+        if (!productData.name || productData.name.trim() === "") {
+            alert("Tên sản phẩm không được để trống!");
+            return;
+        }
+
+        // Nếu không có lỗi, tiếp tục gửi yêu cầu lên server
+        axios.put(`/api/product-${productId}`, productData)
+            .then(response => {
+                alert("Cập nhật sản phẩm thành công!");
+                window.location.href = '/product'; // Chuyển hướng về trang danh sách sản phẩm
+            })
+            .catch(error => {
+                alert("Đã có lỗi khi cập nhật sản phẩm!");
+                console.error(error);
+            });
+    }
+
+
+    // Xử lý sự kiện khi nhấn nút "Lưu"
+    document.getElementById('submitUpdate').addEventListener('click', () => {
+        const productId = 1; // Thay bằng ID sản phẩm bạn muốn cập nhật
+        updateProduct(productId);
+    });
+
+
+
+
+</script>
+
+</body>
+</html>
